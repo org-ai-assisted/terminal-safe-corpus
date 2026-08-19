@@ -1,0 +1,7 @@
+# The demonstration files are raw terminal byte streams -- escape and control
+# bytes, not human-readable text. Classify them as binary so git treats each as a
+# data blob (no text diffs) and any ASCII/Unicode commit gate skips them, exactly
+# as it skips a PNG. GitHub still serves them verbatim as text/plain.
+demos/terminal-attack-demo-WARNING-display-only-safe.txt binary
+demos/unicode-gallery-safe-to-cat.txt binary
+demos/art-safe-to-cat.txt binary

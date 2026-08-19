@@ -1,0 +1,33 @@
+### SAFE terminal-attack-class DEMO (display-only) -- read me first ###
+# Cat'd in a normal terminal this file changes only the DISPLAY: it sets the
+# window title and switches to the alternate screen (both undone by `reset`).
+# It does NOT touch your clipboard, type at your prompt, or run anything.
+# Safe tools that reveal all of this: https://secure-terminal.github.io
+
+]0;terminal attack-class demo (safe)[?1049h[2J[Huser@host:~$ cat tui-showcase.payload
+[7;1m TERMINAL TEXT -- WHAT YOU SEE vs WHAT IS THERE   (safe demo) [0m
+[2m Each row names a class + shows a live example. cat hides it. [0m
+(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B
+(0x(B CLASS                     EXAMPLE (as plain cat shows it)  (0x(B
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu(B
+(0x(B Homoglyph (Cyrillic)      exаmple.com                      (0x(B
+(0x(B Homoglyph (Greek)         goοgle.com                       (0x(B
+(0x(B ASCII look-alike          rnicrosoft.com  (no Unicode)     (0x(B
+(0x(B Bidi override (RTL)       report ‮cod.exe‬                   (0x(B
+(0x(B Zero-width space          veri​fied                         (0x(B
+(0x(B Invisible / BOM           ﻿balance                          (0x(B
+(0x(B Combining (Zalgo)         ḥ́̀̈ẹ́̀̈llo                            (0x(B
+(0x(B Fullwidth forms           ＡＢＣ                           (0x(B
+(0x(B Control byte (CR+erase)   [31mFAILED[0m[2K(0x(B Control byte (CR+erase)   [32mOK[0m                               (0x(B
+(0x(B Hidden by colour (SGR)    [31;41mSECRET[0m                           (0x(B
+(0x(B Charset shift (DEC)       (0qwerty-abc(B                       (0x(B
+(0x(B Hyperlink (OSC 8)         ]8;;https://example.org\example.com]8;;\                      (0x(B
+(0x(B Title hijack (OSC 0)      -> see this window title         (0x(B
+(0x(B Alt-screen (?1049h)       -> this whole screen             (0x(B
+(0tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu(B
+(0x(B Honest foreign (Greek)    Ελληνικά  NOT an attack          (0x(B
+(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B
+[2mClipboard, input-injection, notification and RCE classes: secure-terminal.github.io
+[0m[33mDisplay-only: this set the window title and alternate screen -- run 'reset' to
+restore. Nothing was copied, typed or run.
+[0m
