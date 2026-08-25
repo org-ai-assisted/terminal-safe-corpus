@@ -76,22 +76,24 @@ in one frame.
 Every file is deterministic generator output -- the single source of truth, so the
 committed bytes cannot drift from a hand edit. The generators live in the
 derivative-maker `dist-ai` package; the showcase board is the `tui-showcase` PoC
-from the poc corpus, decoded from its read-safe hex.
+from the poc corpus, decoded from its read-safe hex. Run these from the corpus repo
+root, with `dist-ai` and `terminal-poc-corpus` checked out as siblings (the layout
+`tools/check-drift.sh` defaults to), so the `demos/` output paths resolve:
 
-    # Unicode gallery (from a dist-ai checkout)
-    python3 usr/share/secure-terminal-shots/unicode-gallery.py \
+    # Unicode gallery (generator in a sibling dist-ai checkout)
+    python3 ../dist-ai/usr/share/secure-terminal-shots/unicode-gallery.py \
         > demos/unicode-gallery-safe-to-cat.txt
 
-    # Truecolour art (from a dist-ai checkout)
-    python3 usr/share/secure-terminal-shots/truecolor-art.py \
+    # Truecolour art (generator in a sibling dist-ai checkout)
+    python3 ../dist-ai/usr/share/secure-terminal-shots/truecolor-art.py \
         > demos/art-safe-to-cat.txt
 
-    # Showcase board (from a terminal-poc-corpus checkout: decode the read-safe hex)
+    # Showcase board (decode the read-safe hex from a sibling terminal-poc-corpus checkout)
     python3 - <<'EOF'
     import binascii
-    hx = open('poc/tui-showcase/payload.hex').read()
+    hx = open('../terminal-poc-corpus/poc/tui-showcase/payload.hex').read()
     b = ''.join(''.join(l.split('#', 1)[0].split()) for l in hx.splitlines())
-    open('terminal-attack-demo-WARNING-display-only-safe.txt', 'wb').write(
+    open('demos/terminal-attack-demo-WARNING-display-only-safe.txt', 'wb').write(
         binascii.unhexlify(b))
     EOF
 
@@ -101,3 +103,21 @@ the corpus stale fails the `corpus-drift` workflow instead of shipping silently.
 it locally against sibling `dist-ai` / `terminal-poc-corpus` checkouts:
 
     DIST_AI_REPO=../dist-ai POC_CORPUS_REPO=../terminal-poc-corpus tools/check-drift.sh
+
+## Maintainer notes
+
+- **Which classes are allowed here.** Display-only bytes ONLY: `OSC 0` title, `OSC 8`
+  hyperlink, and the `?1049h` alternate screen (all undone by `reset`), plus colour,
+  Unicode and DEC line-drawing. NEVER a reach-outside class -- no `OSC 52` (clipboard),
+  no `OSC 9` (notification), no `DSR`/answerback query, no RCE. Those stay hex-encoded in
+  [`terminal-poc-corpus`](https://github.com/secure-terminal/terminal-poc-corpus). See
+  [SAFETY.md](SAFETY.md) for the contract this enforces.
+- **Generators are the single source of truth.** The `demos/*.txt` files are never
+  hand-edited: each is deterministic generator output (dist-ai `unicode-gallery.py` /
+  `truecolor-art.py`; the poc-corpus `tui-showcase` hex). `tools/check-drift.sh`
+  regenerates each and byte-compares it against the committed copy;
+  `.github/workflows/corpus-drift.yml` runs it (in `debian:trixie-slim`, since the Unicode
+  gallery is `unicodedata`-version sensitive; reproduced under `LC_ALL=C` + `PYTHONUTF8=1`),
+  with a weekly cron so generator-side drift is caught even with no corpus push.
+- **`.gitattributes` marks the demos `binary`** so git shows no text diffs and any ASCII/
+  Unicode commit gate skips them (as it would a PNG); GitHub still serves them verbatim.
