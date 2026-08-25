@@ -76,22 +76,24 @@ in one frame.
 Every file is deterministic generator output -- the single source of truth, so the
 committed bytes cannot drift from a hand edit. The generators live in the
 derivative-maker `dist-ai` package; the showcase board is the `tui-showcase` PoC
-from the poc corpus, decoded from its read-safe hex.
+from the poc corpus, decoded from its read-safe hex. Run these from the corpus repo
+root, with `dist-ai` and `terminal-poc-corpus` checked out as siblings (the layout
+`tools/check-drift.sh` defaults to), so the `demos/` output paths resolve:
 
-    # Unicode gallery (from a dist-ai checkout)
-    python3 usr/share/secure-terminal-shots/unicode-gallery.py \
+    # Unicode gallery (generator in a sibling dist-ai checkout)
+    python3 ../dist-ai/usr/share/secure-terminal-shots/unicode-gallery.py \
         > demos/unicode-gallery-safe-to-cat.txt
 
-    # Truecolour art (from a dist-ai checkout)
-    python3 usr/share/secure-terminal-shots/truecolor-art.py \
+    # Truecolour art (generator in a sibling dist-ai checkout)
+    python3 ../dist-ai/usr/share/secure-terminal-shots/truecolor-art.py \
         > demos/art-safe-to-cat.txt
 
-    # Showcase board (from a terminal-poc-corpus checkout: decode the read-safe hex)
+    # Showcase board (decode the read-safe hex from a sibling terminal-poc-corpus checkout)
     python3 - <<'EOF'
     import binascii
-    hx = open('poc/tui-showcase/payload.hex').read()
+    hx = open('../terminal-poc-corpus/poc/tui-showcase/payload.hex').read()
     b = ''.join(''.join(l.split('#', 1)[0].split()) for l in hx.splitlines())
-    open('terminal-attack-demo-WARNING-display-only-safe.txt', 'wb').write(
+    open('demos/terminal-attack-demo-WARNING-display-only-safe.txt', 'wb').write(
         binascii.unhexlify(b))
     EOF
 
