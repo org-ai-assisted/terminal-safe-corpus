@@ -1,0 +1,75 @@
+# Cross-repo drift gate: every demos/*.txt is deterministic generator output whose
+# generators live in OTHER repos (dist-ai, terminal-poc-corpus). This regenerates
+# each demo and byte-compares it against the committed copy, so a generator change
+# that leaves the corpus stale fails here instead of shipping silently. The weekly
+# schedule catches drift introduced on the GENERATOR side (a dist-ai / poc-corpus
+# change never touches this repo, so push/PR alone would miss it until the next
+# corpus edit).
+#
+# Runs in debian:trixie-slim, not bare ubuntu-latest: the Unicode gallery is
+# unicodedata-version sensitive, and trixie is what secure-terminal targets, so the
+# committed bytes are pinned to that Unicode database (15.1.0).
+name: corpus-drift
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+  schedule:
+    # Weekly (Mondays 05:17 UTC) -- catch generator-side drift with no corpus push.
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One run per ref; a superseded push has nothing to say.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    # CI runs only where we enabled it. Unset variable -> the job is skipped, no
+    # runner is allocated, and the run stays green: upstream and forks are never
+    # handed a red X for a lane they did not opt into.
+    if: vars.CI_ENABLED_ORG_AI_ASSISTED == 'true'
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie-slim
+    timeout-minutes: 15
+    steps:
+      # actions/checkout needs git present in the container, so this precedes it.
+      - name: Install checkout dependencies (apt only)
+        run: |
+          apt-get update --quiet
+          apt-get install --yes --no-install-recommends ca-certificates git
+          git config --global --add safe.directory '*'
+
+      - name: Check out the corpus
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check out dist-ai (unicode-gallery + truecolor-art generators)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: org-ai-assisted/dist-ai
+          path: _dist-ai
+          persist-credentials: false
+      - name: Check out terminal-poc-corpus (tui-showcase board source)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: secure-terminal/terminal-poc-corpus
+          path: _poc-corpus
+          persist-credentials: false
+
+      - name: Install generator dependencies (apt only)
+        # unicode-gallery.py needs confusable-homoglyphs + regex; truecolor-art.py
+        # and the board hex-decode are pure stdlib.
+        run: |
+          apt-get install --yes --no-install-recommends \
+            python3 python3-confusable-homoglyphs python3-regex
+
+      - name: Regenerate every demo and fail on drift
+        # Sibling checkouts land at ./_dist-ai and ./_poc-corpus (the script defaults).
+        run: ./tools/check-drift.sh

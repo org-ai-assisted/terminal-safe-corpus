@@ -94,3 +94,10 @@ from the poc corpus, decoded from its read-safe hex.
     open('terminal-attack-demo-WARNING-display-only-safe.txt', 'wb').write(
         binascii.unhexlify(b))
     EOF
+
+CI enforces this: `tools/check-drift.sh` regenerates every demo from its generator
+and byte-compares it against the committed copy, so a generator change that leaves
+the corpus stale fails the `corpus-drift` workflow instead of shipping silently. Run
+it locally against sibling `dist-ai` / `terminal-poc-corpus` checkouts:
+
+    DIST_AI_REPO=../dist-ai POC_CORPUS_REPO=../terminal-poc-corpus tools/check-drift.sh
