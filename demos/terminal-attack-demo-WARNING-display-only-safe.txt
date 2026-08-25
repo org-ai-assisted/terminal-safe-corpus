@@ -16,7 +16,7 @@
 (0x(B Bidi override (RTL)       report ‮cod.exe‬                   (0x(B
 (0x(B Zero-width space          veri​fied                         (0x(B
 (0x(B Invisible / BOM           ﻿balance                          (0x(B
-(0x(B Combining (Zalgo)         ḥ́̀̈ẹ́̀̈llo                            (0x(B
+(0x(B Combining (Zalgo)         ḥ́̀̈̂̃̄̆̇̈̉̊̋̌ẹ́̀̈̂̃̄̆̇̈̉̊̋̌llo                            (0x(B
 (0x(B Fullwidth forms           ＡＢＣ                           (0x(B
 (0x(B Control byte (CR+erase)   [31mFAILED[0m[2K(0x(B Control byte (CR+erase)   [32mOK[0m                               (0x(B
 (0x(B Hidden by colour (SGR)    [31;41mSECRET[0m                           (0x(B
