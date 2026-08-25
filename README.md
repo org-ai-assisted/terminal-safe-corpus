@@ -101,3 +101,21 @@ the corpus stale fails the `corpus-drift` workflow instead of shipping silently.
 it locally against sibling `dist-ai` / `terminal-poc-corpus` checkouts:
 
     DIST_AI_REPO=../dist-ai POC_CORPUS_REPO=../terminal-poc-corpus tools/check-drift.sh
+
+## Maintainer notes
+
+- **Which classes are allowed here.** Display-only bytes ONLY: `OSC 0` title, `OSC 8`
+  hyperlink, and the `?1049h` alternate screen (all undone by `reset`), plus colour,
+  Unicode and DEC line-drawing. NEVER a reach-outside class -- no `OSC 52` (clipboard),
+  no `OSC 9` (notification), no `DSR`/answerback query, no RCE. Those stay hex-encoded in
+  [`terminal-poc-corpus`](https://github.com/secure-terminal/terminal-poc-corpus). See
+  [SAFETY.md](SAFETY.md) for the contract this enforces.
+- **Generators are the single source of truth.** The `demos/*.txt` files are never
+  hand-edited: each is deterministic generator output (dist-ai `unicode-gallery.py` /
+  `truecolor-art.py`; the poc-corpus `tui-showcase` hex). `tools/check-drift.sh`
+  regenerates each and byte-compares it against the committed copy;
+  `.github/workflows/corpus-drift.yml` runs it (in `debian:trixie-slim`, since the Unicode
+  gallery is `unicodedata`-version sensitive; reproduced under `LC_ALL=C` + `PYTHONUTF8=1`),
+  with a weekly cron so generator-side drift is caught even with no corpus push.
+- **`.gitattributes` marks the demos `binary`** so git shows no text diffs and any ASCII/
+  Unicode commit gate skips them (as it would a PNG); GitHub still serves them verbatim.
