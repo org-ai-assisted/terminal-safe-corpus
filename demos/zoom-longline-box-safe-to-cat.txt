@@ -1,0 +1,8 @@
+┌────────────────────────────────────────────────────────────┐
+│ long-line + box board                                      │
+└────────────────────────────────────────────────────────────┘
+short line
+Long-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-ong-unbroken-line-END
+word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word lastword
+│========================================================================================================================================================================================================│
+tail marker line >>

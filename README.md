@@ -27,6 +27,7 @@ demos/
     unicode-gallery-safe-to-cat.txt                    Unicode risk-class gallery
     art-safe-to-cat.txt                                24-bit-colour terminal art
     terminal-attack-demo-WARNING-display-only-safe.txt display-attack showcase board
+    zoom-*-safe-to-cat.txt                             zoom-verify render-check boards
 ```
 
 ## The files
@@ -63,6 +64,18 @@ scrollback is preserved. The genuinely dangerous classes (clipboard writes, inpu
 reflection, notification and RCE) are **not** here -- they stay encoded in the
 [poc corpus](https://github.com/secure-terminal/terminal-poc-corpus).
 
+### `demos/zoom-*-safe-to-cat.txt`
+
+The render-check boards behind the zoom-verify screenshots on
+[secure-terminal.github.io](https://secure-terminal.github.io/screenshots/#zoom-verify):
+a dense 24-bit-colour gradient (`zoom-colorgrad`), a box frame with over-long lines
+(`zoom-longline-box`), exact-grid-width lines (`zoom-exact-grid`), wide CJK + emoji
+(`zoom-wide-cjk`), wide ASCII art (`zoom-art`), and a general showcase board
+(`zoom-tui-showcase`). Each is display-only -- colour, box/line glyphs, Unicode -- and
+resets to ground state at every newline. The zoom-verify shots `cat` these exact files, so
+each shot's `[secure-terminal] running: /bin/cat demos/zoom-<name>-safe-to-cat.txt` banner
+IS its reproduce command.
+
 ## Read one safely first
 
 Feed any file to a tool that shows the bytes before your terminal renders them:
@@ -96,6 +109,12 @@ root, with `dist-ai` and `terminal-poc-corpus` checked out as siblings (the layo
     open('demos/terminal-attack-demo-WARNING-display-only-safe.txt', 'wb').write(
         binascii.unhexlify(b))
     EOF
+
+    # Zoom-verify boards (Qt-free generator in a sibling dist-ai checkout, one per name)
+    z=../dist-ai/usr/share/secure-terminal-tests/zoom_boards.py
+    for b in tui-showcase colorgrad longline-box exact-grid wide-cjk art; do
+        python3 "$z" "$b" > "demos/zoom-$b-safe-to-cat.txt"
+    done
 
 CI enforces this: `tools/check-drift.sh` regenerates every demo from its generator
 and byte-compares it against the committed copy, so a generator change that leaves

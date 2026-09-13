@@ -43,9 +43,15 @@ repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd -- "${repo_root}"
 
 shots_dir="${dist_ai_repo}/usr/share/secure-terminal-shots"
+tests_dir="${dist_ai_repo}/usr/share/secure-terminal-tests"
 unicode_gen="${shots_dir}/unicode-gallery.py"
 art_gen="${shots_dir}/truecolor-art.py"
 board_hex="${poc_corpus_repo}/poc/tui-showcase/payload.hex"
+## Zoom-verify display boards (CLI shots `cat` these): Qt-free generator emits one board
+## by name to stdout. The zoom-verify screenshots on secure-terminal.github.io reproduce
+## from exactly these files.
+zoom_boards_gen="${tests_dir}/zoom_boards.py"
+zoom_boards="tui-showcase colorgrad longline-box exact-grid wide-cjk art"
 
 fail=0
 
@@ -59,14 +65,9 @@ cleanup() {
 trap cleanup EXIT
 
 ## Decode the read-safe hex board (strip inline # comments + whitespace, unhexlify)
-## and write the raw bytes to stdout. Pure stdlib, deterministic.
+## and write the raw bytes to stdout, via the standalone decoder (run directly).
 decode_board() {
-   python3 - "${board_hex}" <<'PY'
-import binascii, sys
-src = open(sys.argv[1]).read()
-hexed = ''.join(''.join(line.split('#', 1)[0].split()) for line in src.splitlines())
-sys.stdout.buffer.write(binascii.unhexlify(hexed))
-PY
+   "${repo_root}/tools/decode-board.py" "${board_hex}"
 }
 
 ## Regenerate demos/$1 with the command in "$@" (from arg 3 on) and byte-compare
@@ -105,7 +106,7 @@ check() {
 }
 
 ## Fail loud if a generator source is absent (a bad checkout is an env bug, not "no drift").
-for src in "${unicode_gen}" "${art_gen}" "${board_hex}"; do
+for src in "${unicode_gen}" "${art_gen}" "${board_hex}" "${zoom_boards_gen}"; do
    if [ ! -e "${src}" ]; then
       printf '%s\n' \
          "ERROR: generator source not found: ${src}" \
@@ -126,6 +127,13 @@ check terminal-attack-demo-WARNING-display-only-safe.txt \
    "decode ${board_hex}" \
    decode_board
 
+## style-ok: no-safe-rm not relevant here -- loop over the zoom boards, one drift check each.
+for zb in ${zoom_boards}; do
+   check "zoom-${zb}-safe-to-cat.txt" \
+      "python3 ${zoom_boards_gen} ${zb}" \
+      python3 "${zoom_boards_gen}" "${zb}"
+done
+
 if [ "${fail}" -ne 0 ]; then
    printf '%s\n' \
       "" \
@@ -135,4 +143,4 @@ fi
 
 printf '%s\n' \
    "" \
-   "all 3 corpus demos match their generators; no drift."
+   "all corpus demos match their generators; no drift."

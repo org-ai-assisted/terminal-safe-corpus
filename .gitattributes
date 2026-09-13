@@ -5,3 +5,9 @@
 demos/terminal-attack-demo-WARNING-display-only-safe.txt binary
 demos/unicode-gallery-safe-to-cat.txt binary
 demos/art-safe-to-cat.txt binary
+demos/zoom-tui-showcase-safe-to-cat.txt binary
+demos/zoom-colorgrad-safe-to-cat.txt binary
+demos/zoom-longline-box-safe-to-cat.txt binary
+demos/zoom-exact-grid-safe-to-cat.txt binary
+demos/zoom-wide-cjk-safe-to-cat.txt binary
+demos/zoom-art-safe-to-cat.txt binary
