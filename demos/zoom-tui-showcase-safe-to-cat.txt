@@ -3,7 +3,7 @@
 └──────────────────────────────────────────────┘
 [1mbold[0m [4munderline[0m [7mreverse[0m normal
 [31mred [32mgreen [33myellow [34mblue [35mmagenta [36mcyan[0m
-unicode: éèê café naïve -- quotes "x" 'y'
+unicode: éèê café naïve -- quotes “x” ‘y’
 box glyphs: ┌─┐ │ └─┘ █▓▒░
 path: /usr/lib/python3/dist-packages/secure_terminal/terminal.py
 $ prompt line, then a tail marker >>
