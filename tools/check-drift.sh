@@ -46,6 +46,7 @@ shots_dir="${dist_ai_repo}/usr/share/secure-terminal-shots"
 tests_dir="${dist_ai_repo}/usr/share/secure-terminal-tests"
 unicode_gen="${shots_dir}/unicode-gallery.py"
 art_gen="${shots_dir}/truecolor-art.py"
+nonewline_gen="${shots_dir}/nonewline-demo.py"
 board_hex="${poc_corpus_repo}/poc/tui-showcase/payload.hex"
 ## Zoom-verify display boards (CLI shots `cat` these): Qt-free generator emits one board
 ## by name to stdout. The zoom-verify screenshots on secure-terminal.github.io reproduce
@@ -106,7 +107,7 @@ check() {
 }
 
 ## Fail loud if a generator source is absent (a bad checkout is an env bug, not "no drift").
-for src in "${unicode_gen}" "${art_gen}" "${board_hex}" "${zoom_boards_gen}"; do
+for src in "${unicode_gen}" "${art_gen}" "${nonewline_gen}" "${board_hex}" "${zoom_boards_gen}"; do
    if [ ! -e "${src}" ]; then
       printf '%s\n' \
          "ERROR: generator source not found: ${src}" \
@@ -122,6 +123,10 @@ check unicode-gallery-safe-to-cat.txt \
 check art-safe-to-cat.txt \
    "python3 ${art_gen}" \
    python3 "${art_gen}"
+
+check nonewline-safe-to-cat.txt \
+   "python3 ${nonewline_gen}" \
+   python3 "${nonewline_gen}"
 
 check terminal-attack-demo-WARNING-display-only-safe.txt \
    "decode ${board_hex}" \

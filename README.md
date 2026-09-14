@@ -28,6 +28,7 @@ demos/
     art-safe-to-cat.txt                                24-bit-colour terminal art
     terminal-attack-demo-WARNING-display-only-safe.txt display-attack showcase board
     zoom-*-safe-to-cat.txt                             zoom-verify render-check boards
+    nonewline-safe-to-cat.txt                          no-trailing-newline gutter-mark demo
 ```
 
 ## The files
@@ -73,8 +74,16 @@ a dense 24-bit-colour gradient (`zoom-colorgrad`), a box frame with over-long li
 (`zoom-wide-cjk`), wide ASCII art (`zoom-art`), and a general showcase board
 (`zoom-tui-showcase`). Each is display-only -- colour, box/line glyphs, Unicode -- and
 resets to ground state at every newline. The zoom-verify shots `cat` these exact files, so
-each shot's `[secure-terminal] running: /bin/cat demos/zoom-<name>-safe-to-cat.txt` banner
-IS its reproduce command.
+each shot's `cat demos/zoom-<name>-safe-to-cat.txt` prompt line IS its reproduce command.
+
+### `demos/nonewline-safe-to-cat.txt`
+
+A tiny plain-ASCII demo whose LAST line is written with no final newline. `cat` it and the
+shell prompt returns on that same last line; secure-terminal flags the line with its
+left-gutter no-trailing-newline mark. It reproduces the no-newline screenshot on
+[secure-terminal.github.io](https://secure-terminal.github.io/screenshots/) via
+`cat demos/nonewline-safe-to-cat.txt`. Display-only: plain text, no control bytes, nothing
+persists.
 
 ## Read one safely first
 
