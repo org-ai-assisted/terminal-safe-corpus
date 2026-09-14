@@ -1,0 +1,3 @@
+secure-terminal -- no-trailing-newline demo (display-only, safe to cat)
+A file whose last line has no final newline leaves the shell prompt on that
+line; secure-terminal flags it in the left gutter -> this line has no newline
