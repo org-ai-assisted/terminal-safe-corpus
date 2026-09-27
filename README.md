@@ -29,9 +29,21 @@ demos/
     terminal-attack-demo-WARNING-display-only-safe.txt display-attack showcase board
     zoom-*-safe-to-cat.txt                             zoom-verify render-check boards
     nonewline-safe-to-cat.txt                          no-trailing-newline gutter-mark demo
+    progress-crbar-safe-to-cat.txt                     carriage-return progress bar (ASCII)
+    progress-tqdm-safe-to-cat.txt                      tqdm progress bar (Unicode block glyphs)
 ```
 
 ## The files
+
+### `demos/progress-crbar-safe-to-cat.txt` and `demos/progress-tqdm-safe-to-cat.txt`
+
+Two byte-stable progress bars: an ASCII carriage-return bar and a `tqdm` Unicode
+block-glyph bar. `cat` one and a terminal redraws it in place, exactly as the program
+that emitted it would. They are display-only (carriage return, erase-line, SGR colour,
+block glyphs -- no reach-outside), and they carry no clock or rate, so the bytes are
+fixed. The secure-terminal compatibility page renders these under each line-editing mode
+(full / read-safe / append-only). Generators (single source of truth): dist-ai
+`usr/share/secure-terminal-shots/progress-crbar.sh` and `progress-tqdm.py`.
 
 ### `demos/unicode-gallery-safe-to-cat.txt`
 
