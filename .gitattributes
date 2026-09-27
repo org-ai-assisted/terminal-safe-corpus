@@ -15,3 +15,5 @@ demos/zoom-exact-grid-safe-to-cat.txt binary
 demos/zoom-wide-cjk-safe-to-cat.txt binary
 demos/zoom-art-safe-to-cat.txt binary
 demos/nonewline-safe-to-cat.txt binary
+demos/progress-crbar-safe-to-cat.txt binary
+demos/progress-tqdm-safe-to-cat.txt binary

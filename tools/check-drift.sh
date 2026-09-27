@@ -47,6 +47,8 @@ tests_dir="${dist_ai_repo}/usr/share/secure-terminal-tests"
 unicode_gen="${shots_dir}/unicode-gallery.py"
 art_gen="${shots_dir}/truecolor-art.py"
 nonewline_gen="${shots_dir}/nonewline-demo.py"
+crbar_gen="${shots_dir}/progress-crbar.sh"
+tqdm_gen="${shots_dir}/progress-tqdm.py"
 board_hex="${poc_corpus_repo}/poc/tui-showcase/payload.hex"
 ## Zoom-verify display boards (CLI shots `cat` these): Qt-free generator emits one board
 ## by name to stdout. The zoom-verify screenshots on secure-terminal.github.io reproduce
@@ -131,6 +133,16 @@ check nonewline-safe-to-cat.txt \
 check terminal-attack-demo-WARNING-display-only-safe.txt \
    "decode ${board_hex}" \
    decode_board
+
+## Progress-bar demos (the compatibility-page line-editing shots `cat` these): each generator
+## emits its byte-stable bytes to stdout (tqdm under the PYTHONUTF8 set above for its block glyphs).
+check progress-crbar-safe-to-cat.txt \
+   "bash ${crbar_gen}" \
+   bash "${crbar_gen}"
+
+check progress-tqdm-safe-to-cat.txt \
+   "python3 ${tqdm_gen}" \
+   python3 "${tqdm_gen}"
 
 ## style-ok: no-safe-rm not relevant here -- loop over the zoom boards, one drift check each.
 for zb in ${zoom_boards}; do
