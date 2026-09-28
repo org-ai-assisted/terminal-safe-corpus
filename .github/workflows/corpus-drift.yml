@@ -64,11 +64,12 @@ jobs:
           persist-credentials: false
 
       - name: Install generator dependencies (apt only)
-        # unicode-gallery.py needs confusable-homoglyphs + regex; truecolor-art.py
-        # and the board hex-decode are pure stdlib.
+        # unicode-gallery.py needs confusable-homoglyphs + regex; progress-tqdm.py
+        # needs tqdm; truecolor-art.py, progress-crbar.sh and the board hex-decode
+        # are pure stdlib / bash.
         run: |
           apt-get install --yes --no-install-recommends \
-            python3 python3-confusable-homoglyphs python3-regex
+            python3 python3-confusable-homoglyphs python3-regex python3-tqdm
 
       - name: Regenerate every demo and fail on drift
         # Sibling checkouts land at ./_dist-ai and ./_poc-corpus (the script defaults).
